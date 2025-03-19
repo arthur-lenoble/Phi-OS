@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strawberry Phi OS</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            overflow: hidden;
+        }
+
+        .desktop {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .icon {
+            width: 80px;
+            text-align: center;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .icon img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .window {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: 600px;
+            height: 400px;
+            background-color: #34495e;
+            border: 1px solid #1abc9c;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            resize: both;
+        }
+
+        .window-header {
+            background-color: #1abc9c;
+            padding: 5px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
+        .window-content {
+            padding: 10px;
+            height: calc(100% - 30px);
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            cursor: pointer;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1abc9c;
+            display: flex;
+            padding: 5px;
+            gap: 10px;
+        }
+
+        .taskbar-item {
+            background-color: #34495e;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .taskbar-item.active {
+            background-color: #2c3e50;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border: none;
+            resize: none;
+        }
+
+        #terminal-output {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 5px;
+            height: 90%;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+
+        #terminal-input {
+            width: 100%;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border: none;
+            outline: none;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop">
+        <div class="icon" onclick="openApp('browser')">
+            <img src="https://img.icons8.com/color/48/000000/internet.png" alt="Navigateur">
+            <div>Navigateur</div>
+        </div>
+        <div class="icon" onclick="openApp('calculator')">
+            <img src="https://img.icons8.com/color/48/000000/calculator.png" alt="Calculatrice">
+            <div>Calculatrice</div>
+        </div>
+        <div class="icon" onclick="openApp('notepad')">
+            <img src="https://img.icons8.com/color/48/000000/notepad.png" alt="Bloc-notes">
+            <div>Bloc-notes</div>
+        </div>
+        <div class="icon" onclick="openApp('settings')">
+            <img src="https://img.icons8.com/color/48/000000/settings.png" alt="Paramètres">
+            <div>Paramètres</div>
+        </div>
+        <div class="icon" onclick="openApp('terminal')">
+            <img src="https://img.icons8.com/color/48/000000/console.png" alt="Terminal">
+            <div>Terminal</div>
+        </div>
+    </div>
+
+    <div id="browser" class="window">
+        <div class="window-header">
+            <span>Navigateur</span>
+            <span class="close-btn" onclick="closeApp('browser')">X</span>
+        </div>
+        <div class="window-content">
+            <iframe src="https://codepen.io/LOBE-FRONTAL-8/full/MYgPjmQ"></iframe>
+        </div>
+    </div>
+
+    <div id="calculator" class="window">
+        <div class="window-header">
+            <span>Calculatrice</span>
+            <span class="close-btn" onclick="closeApp('calculator')">X</span>
+        </div>
+        <div class="window-content">
+            <input type="text" id="calc-input" disabled>
+            <div>
+                <button onclick="appendToCalc('7')">7</button>
+                <button onclick="appendToCalc('8')">8</button>
+                <button onclick="appendToCalc('9')">9</button>
+                <button onclick="appendToCalc('/')">/</button>
+            </div>
+            <div>
+                <button onclick="appendToCalc('4')">4</button>
+                <button onclick="appendToCalc('5')">5</button>
+                <button onclick="appendToCalc('6')">6</button>
+                <button onclick="appendToCalc('*')">*</button>
+            </div>
+            <div>
+                <button onclick="appendToCalc('1')">1</button>
+                <button onclick="appendToCalc('2')">2</button>
+                <button onclick="appendToCalc('3')">3</button>
+                <button onclick="appendToCalc('-')">-</button>
+            </div>
+            <div>
+                <button onclick="appendToCalc('0')">0</button>
+                <button onclick="appendToCalc('.')">.</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="appendToCalc('+')">+</button>
+            </div>
+            <div>
+                <button onclick="clearCalc()">C</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notepad" class="window">
+        <div class="window-header">
+            <span>Bloc-notes</span>
+            <span class="close-btn" onclick="closeApp('notepad')">X</span>
+        </div>
+        <div class="window-content">
+            <textarea id="note-area"></textarea>
+        </div>
+    </div>
+
+    <div id="settings" class="window">
+        <div class="window-header">
+            <span>Paramètres</span>
+            <span class="close-btn" onclick="closeApp('settings')">X</span>
+        </div>
+        <div class="window-content">
+            <h3>Thème</h3>
+            <button onclick="changeTheme('light')">Clair</button>
+            <button onclick="changeTheme('dark')">Sombre</button>
+        </div>
+    </div>
+
+    <div id="terminal" class="window">
+        <div class="window-header">
+            <span>Terminal</span>
+            <span class="close-btn" onclick="closeApp('terminal')">X</span>
+        </div>
+        <div class="window-content">
+            <div id="terminal-output"></div>
+            <input type="text" id="terminal-input" onkeydown="handleTerminalInput(event)">
+        </div>
+    </div>
+
+    <div class="taskbar" id="taskbar">
+        <!-- Les éléments de la barre des tâches seront ajoutés dynamiquement -->
+    </div>
+
+    <script>
+        let activeApps = [];
+        let terminalHistory = [];
+        let historyIndex = -1;
+
+        function openApp(appId) {
+            const app = document.getElementById(appId);
+            app.style.display = 'block';
+            if (!activeApps.includes(appId)) {
+                activeApps.push(appId);
+                updateTaskbar();
+            }
+            makeDraggable(app);
+        }
+
+        function closeApp(appId) {
+            const app = document.getElementById(appId);
+            app.style.display = 'none';
+            activeApps = activeApps.filter(id => id !== appId);
+            updateTaskbar();
+        }
+
+        function updateTaskbar() {
+            const taskbar = document.getElementById('taskbar');
+            taskbar.innerHTML = '';
+            activeApps.forEach(appId => {
+                const appName = document.getElementById(appId).querySelector('.window-header span').innerText;
+                const taskbarItem = document.createElement('div');
+                taskbarItem.className = 'taskbar-item';
+                taskbarItem.innerText = appName;
+                taskbarItem.onclick = () => {
+                    const app = document.getElementById(appId);
+                    app.style.display = 'block';
+                };
+                taskbar.appendChild(taskbarItem);
+            });
+        }
+
+        function makeDraggable(element) {
+            const header = element.querySelector('.window-header');
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            header.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - element.offsetLeft;
+                offsetY = e.clientY - element.offsetTop;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    element.style.left = `${e.clientX - offsetX}px`;
+                    element.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
+        function appendToCalc(value) {
+            document.getElementById('calc-input').value += value;
+        }
+
+        function clearCalc() {
+            document.getElementById('calc-input').value = '';
+        }
+
+        function calculate() {
+            try {
+                document.getElementById('calc-input').value = eval(document.getElementById('calc-input').value);
+            } catch (e) {
+                document.getElementById('calc-input').value = 'Erreur';
+            }
+        }
+
+        function changeTheme(theme) {
+            document.body.style.backgroundColor = theme === 'light' ? '#ecf0f1' : '#2c3e50';
+            document.body.style.color = theme === 'light' ? '#2c3e50' : '#ecf0f1';
+        }
+
+        function handleTerminalInput(event) {
+            const input = document.getElementById('terminal-input');
+            const output = document.getElementById('terminal-output');
+
+            if (event.key === 'Enter') {
+                terminalHistory.push(input.value);
+                historyIndex = terminalHistory.length;
+                output.innerHTML += `<p>> ${input.value}</p>`;
+                input.value = '';
+            } else if (event.key === 'ArrowUp') {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    input.value = terminalHistory[historyIndex];
+                }
+            } else if (event.key === 'ArrowDown') {
+                if (historyIndex < terminalHistory.length - 1) {
+                    historyIndex++;
+                    input.value = terminalHistory[historyIndex];
+                } else {
+                    historyIndex = terminalHistory.length;
+                    input.value = '';
+                }
+            }
+        }
+
+        // Sauvegarde et chargement des notes
+        const noteArea = document.getElementById('note-area');
+        noteArea.value = localStorage.getItem('note') || '';
+        noteArea.addEventListener('input', () => {
+            localStorage.setItem('note', noteArea.value);
+        });
+    </script>
+</body>
+</html>
